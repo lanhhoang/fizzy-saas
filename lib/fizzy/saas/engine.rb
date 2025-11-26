@@ -17,6 +17,17 @@ module Fizzy
         app.config.middleware.insert_after(ActiveRecord::Middleware::DatabaseSelector, TransactionPinning::Middleware)
       end
 
+      initializer "fizzy_saas.production_config", before: :load_config_initializers do |app|
+        if Rails.env.local?
+          if Rails.root.join("tmp/structured-logging.txt").exist?
+            app.config.structured_logging.logger = ActiveSupport::Logger.new("log/structured-development.log")
+          end
+        else
+          app.config.active_storage.service = :purestorage
+          app.config.structured_logging.logger = ActiveSupport::Logger.new(STDOUT)
+        end
+      end
+
       # Load test mocks automatically in test environment
       initializer "fizzy_saas.test_mocks", after: :load_config_initializers do
         if Rails.env.test?
@@ -37,7 +48,7 @@ module Fizzy
       config.to_prepare do
         Queenbee::Subscription.short_names = Subscription::SHORT_NAMES
 
-        # Default to dev QB token if not set
+        # Default to local dev QB token if not set
         Queenbee::ApiToken.token = ENV.fetch("QUEENBEE_API_TOKEN") { "69a4cfb8705913e6323f7b4c0c0cff9bd8df37da532f4375b85e9655b8100bb023591b48d308205092aa0a04dd28cb6c62d6798364a6f44cc1e675814eb148a1" }
 
         Subscription::SHORT_NAMES.each do |short_name|
