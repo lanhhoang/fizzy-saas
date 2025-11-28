@@ -22,7 +22,7 @@ Fizzy is deployed with [Kamal](https://kamal-deploy.org/). You'll need to have t
 
 ## Handbook
 
-See the [Fizzy handbook](https://handbooks.37signals.works/18/fizzy) for runbooks and other information.
+See the [Fizzy handbook](https://handbooks.37signals.works/18/fizzy) for runbooks and more.
 
 ### Beta
 
